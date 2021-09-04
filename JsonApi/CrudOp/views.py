@@ -1,19 +1,15 @@
-from http.client import BAD_REQUEST
-import re
-from django.shortcuts import render 
 from .models import Tasklist
-from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView 
+from rest_framework.generics import GenericAPIView, ListAPIView, DestroyAPIView
 from .serializers import TaskSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 
 
 class CreateTask(GenericAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = TaskSerializer
     def post(self, request):
         data = TaskSerializer(data=request.data)
@@ -23,6 +19,8 @@ class CreateTask(GenericAPIView):
         return Response(data={'not created'}, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteTask(GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_object(self, id):
      try:
          return Tasklist.objects.get(id=id)
@@ -36,6 +34,8 @@ class DeleteTask(GenericAPIView):
 
 
 class UpdateTask(GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     serializer_class = TaskSerializer
     def get_object(self, id):
      try:
@@ -55,6 +55,8 @@ class UpdateTask(GenericAPIView):
     
 
 class ViewTask(GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     serializer_class = TaskSerializer
 
     def get_object(self, id):
@@ -66,14 +68,21 @@ class ViewTask(GenericAPIView):
         data = self.serializer_class(self.get_object(id))
         return Response(data.data, status=status.HTTP_200_OK)
 
-class ViewAllTask(APIView):
-    # permission_classes = [IsAuthenticated]
+class ViewAllTask(ListAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
 
     serializer_class = TaskSerializer
+    """For Api Viwes
+    code
+    """
+    
+    # def get(self, request):
+    #     tasks = Tasklist.objects.all()
+    #     data = self.serializer_class(tasks, many=True)
+    #     return Response(data.data, status=status.HTTP_200_OK)
 
-    def get(self, request):
-        tasks = Tasklist.objects.all()
-        data = self.serializer_class(tasks, many=True)
-        return Response(data.data, status=status.HTTP_200_OK)
+    """"for generics api views"""
+    queryset = Tasklist.objects.all()
+    
 
 
