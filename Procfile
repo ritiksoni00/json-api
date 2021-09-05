@@ -1,1 +1,1 @@
-web: gunicorn JsonApi.wsgi
+web: gunicorn jsonapi.wsgi
