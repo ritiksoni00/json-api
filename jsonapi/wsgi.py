@@ -13,7 +13,8 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "jsonapi.settings")
 
-from whitenoise.django import DjangoWhiteNoise
+from whitenoise import WhiteNoise
 
 
-application = DjangoWhiteNoise(get_wsgi_application())
+
+application = WhiteNoise(get_wsgi_application())
